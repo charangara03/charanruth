@@ -16,7 +16,7 @@ body{background:#f0f2f5}
 .dropdown{position:relative;display:inline-block;flex-shrink:0}
 .dropbtn{background:white;color:black;border:1px solid #ddd;padding:7px 14px;border-radius:20px;cursor:pointer}
 .dropbtn.active{background:#2874f0 !important;color:white !important;border-color:#2874f0 !important}
-.dropdown-content{display:none;position:fixed;background:white;min-width:160px;max-height:250px;overflow-y:auto;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:9999;border:1px solid #ddd}
+.dropdown-content{display:none;position:fixed;background:white;min-width:200px;max-height:250px;overflow-y:auto;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:9999;border:1px solid #ddd}
 .dropdown-content::-webkit-scrollbar{width:6px}
 .dropdown-content::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
 .dropdown-content button{display:block;width:100%;text-align:left;border:none;border-radius:0;padding:11px 15px;background:white;font-weight:bold;cursor:pointer}
@@ -67,7 +67,17 @@ body{background:#f0f2f5}
     </div>
   </div>
 
-  <button onclick="filterProd('fashion',this)">👕 Fashion</button>
+  <!-- Fashion Dropdown -->
+  <div class="dropdown">
+    <button class="dropbtn" id="fashionBtn" onclick="toggleMenu('fashionMenu', 'fashionBtn', event)">👕 Fashion ▼</button>
+    <div class="dropdown-content" id="fashionMenu">
+      <button onclick="filterSub('mens_wardrobe', 'fashionBtn', 'fashionMenu')">👔 Men's Wardrobe (Adults)</button>
+      <button onclick="filterSub('boys_wear', 'fashionBtn', 'fashionMenu')">👦 Boys' Wear (Toddlers to Teens)</button>
+      <button onclick="filterSub('girls_wear', 'fashionBtn', 'fashionMenu')">👧 Girls' Wear (Toddlers to Teens)</button>
+      <button onclick="filterSub('womens_kids', 'fashionBtn', 'fashionMenu')">👗 Women's and Kids Wear</button>
+    </div>
+  </div>
+
   <button onclick="filterProd('electronics',this)">🎧 Electronics</button>
   <button onclick="filterProd('watches',this)">⌚ Watches</button>
   <button onclick="filterProd('sarees',this)">🥻 Sarees</button>
@@ -353,6 +363,16 @@ const products=[
 {id:102,name:"Woodland Brown Loafer",price:3999,cat:"loafers",img:"https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=500"},
 {id:103,name:"Red Chief Leather Loafer",price:2999,cat:"loafers",img:"https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500"},
 
+// --- FASHION ---
+{id:301,name:"Men's Formal Cotton Shirt",price:1299,cat:"mens_wardrobe",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
+{id:302,name:"Men's Casual Denim Jacket",price:2499,cat:"mens_wardrobe",img:"https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=500"},
+{id:303,name:"Boys' Party Wear Kurta Set",price:999,cat:"boys_wear",img:"https://images.unsplash.com/photo-1503944583283-792b5a190ef6?w=500"},
+{id:304,name:"Boys' Cotton T-Shirt & Shorts",price:799,cat:"boys_wear",img:"https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=500"},
+{id:305,name:"Girls' Floral Frock Dress",price:1199,cat:"girls_wear",img:"https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=500"},
+{id:306,name:"Girls' Ethnic Lehenga Choli",price:1599,cat:"girls_wear",img:"https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=500"},
+{id:307,name:"Women's Designer Kurti Set",price:1899,cat:"womens_kids",img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500"},
+{id:308,name:"Kids' Winter Woolen Sweater",price:899,cat:"womens_kids",img:"https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=500"},
+
 // --- OTHERS ---
 {id:3,name:"Sony Bluetooth Headset",price:2990,cat:"electronics",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
 {id:4,name:"Levis T-Shirt Cotton",price:1299,cat:"fashion",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
@@ -371,12 +391,14 @@ document.getElementById('grid').innerHTML=list.map(p=>`<div class="card"><img sr
 function closeAllMenus(){
 document.getElementById('mobileMenu').classList.remove('show');
 document.getElementById('shoeMenu').classList.remove('show');
+document.getElementById('fashionMenu').classList.remove('show');
 }
 
 function filterProd(c,btn){
 closeAllMenus();
 document.getElementById('mobileBtn').classList.remove('active');
 document.getElementById('shoeBtn').classList.remove('active');
+document.getElementById('fashionBtn').classList.remove('active');
 
 if(btn){
   document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
@@ -405,6 +427,7 @@ document.getElementById(menuId).classList.remove('show');
 document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
 document.getElementById('mobileBtn').classList.remove('active');
 document.getElementById('shoeBtn').classList.remove('active');
+document.getElementById('fashionBtn').classList.remove('active');
 
 const activeBtn = document.getElementById(btnId);
 activeBtn.classList.add('active');
