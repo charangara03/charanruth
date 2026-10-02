@@ -60,8 +60,6 @@ body{background:#f0f2f5}
 .modal-content input{width:100%;padding:10px;margin-bottom:12px;border:1px solid #ddd;border-radius:5px}
 .modal-content button.submit-btn{width:100%;background:#2874f0;color:white;border:none;padding:10px;border-radius:5px;font-weight:bold;cursor:pointer}
 .close-btn{background:red;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:5px;position:absolute;right:15px;top:15px}
-.switch-text{margin-top:10px;font-size:13px;text-align:center}
-.switch-text span{color:#2874f0;cursor:pointer;font-weight:bold}
 .cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:5px;font-size:14px}
 </style>
 </head>
@@ -146,7 +144,7 @@ body{background:#f0f2f5}
 <div class="home-container" id="homeView">
   <div class="hero-banner">
     <h1>Welcome to CharanRuth Mega Store 🚀</h1>
-    <p>Please Login or Create an Account to Explore Products, Add to Cart & Shop!</p>
+    <p>Please Login with your Email & Password to Explore Products, Add to Cart & Shop!</p>
     <button class="shop-now-btn" onclick="checkLoginAndShop()">Login to Start Shopping</button>
   </div>
 
@@ -194,28 +192,15 @@ body{background:#f0f2f5}
   </div>
 </div>
 
-<!-- Login Modal -->
+<!-- Direct Login Modal -->
 <div class="modal" id="loginModal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal('loginModal')">X</button>
-    <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Enter Email">
+    <h2>Quick Login</h2>
+    <input type="email" id="loginEmail" placeholder="Enter Email Address">
     <input type="password" id="loginPass" placeholder="Enter Password">
-    <button class="submit-btn" onclick="handleLogin()">Login</button>
-    <div class="switch-text">Don't have an account? <span onclick="switchToRegister()">Create Account</span></div>
-  </div>
-</div>
-
-<!-- Register Modal -->
-<div class="modal" id="registerModal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeModal('registerModal')">X</button>
-    <h2>Create Account</h2>
-    <input type="text" id="regName" placeholder="Full Name">
-    <input type="email" id="regEmail" placeholder="Email Address">
-    <input type="password" id="regPass" placeholder="Password">
-    <button class="submit-btn" onclick="handleRegister()">Sign Up</button>
-    <div class="switch-text">Already have an account? <span onclick="switchToLogin()">Login</span></div>
+    <button class="submit-btn" onclick="handleDirectLogin()">Login / Continue</button>
+    <p style="font-size:12px;color:#666;text-align:center;margin-top:8px;">Just enter any email & password to login instantly!</p>
   </div>
 </div>
 
@@ -224,8 +209,7 @@ body{background:#f0f2f5}
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal('profileModal')">X</button>
     <h2>My Profile</h2>
-    <p><strong>Name:</strong> <span id="profName"></span></p>
-    <p style="margin-top:8px;"><strong>Email:</strong> <span id="profEmail"></span></p>
+    <p><strong>Email:</strong> <span id="profEmail"></span></p>
     <button class="submit-btn" style="background:red;margin-top:20px;" onclick="handleLogout()">Logout</button>
   </div>
 </div>
@@ -589,11 +573,9 @@ const products=[
 
 let cartItems = [];
 let currentUser = null;
-let registeredUsers = [];
 
 function checkLoginAndShop(){
   if(!currentUser){
-    alert("Please Login First to Access Shopping!");
     openProfileModal();
   } else {
     filterProd('all', document.querySelector('.cats button:nth-child(2)'));
@@ -602,7 +584,6 @@ function checkLoginAndShop(){
 
 function checkLoginAndAction(actionCallback){
   if(!currentUser){
-    alert("Please Login First to Access Categories!");
     openProfileModal();
   } else {
     actionCallback();
@@ -624,7 +605,6 @@ function goHome(){
 
 function render(list){
   if(!currentUser){
-    alert("Please Login First!");
     openProfileModal();
     return;
   }
@@ -652,7 +632,6 @@ function closeAllMenus(){
 
 function filterProd(c,btn){
   if(!currentUser){
-    alert("Please Login First!");
     openProfileModal();
     return;
   }
@@ -673,7 +652,6 @@ function filterProd(c,btn){
 
 function toggleMenu(menuId, btnId, e){
   if(!currentUser){
-    alert("Please Login First!");
     openProfileModal();
     return;
   }
@@ -692,7 +670,6 @@ function toggleMenu(menuId, btnId, e){
 
 function filterSub(cat, btnId, menuId){
   if(!currentUser){
-    alert("Please Login First!");
     openProfileModal();
     return;
   }
@@ -713,7 +690,6 @@ function filterSub(cat, btnId, menuId){
 
 function addCart(productId){
   if(!currentUser){
-    alert("Please Login First to Add Items to Cart!");
     openProfileModal();
     return;
   }
@@ -727,7 +703,6 @@ function addCart(productId){
 
 function buyNow(productId){
   if(!currentUser){
-    alert("Please Login First to Purchase!");
     openProfileModal();
     return;
   }
@@ -762,7 +737,6 @@ function removeFromCart(index){
 
 function openCart(){
   if(!currentUser){
-    alert("Please Login First to View Cart!");
     openProfileModal();
     return;
   }
@@ -773,10 +747,9 @@ function closeModal(modalId){
   document.getElementById(modalId).style.display = 'none';
 }
 
-// Profile & Auth Logic
+// Direct Login Logic
 function openProfileModal(){
   if(currentUser){
-    document.getElementById('profName').innerText = currentUser.name;
     document.getElementById('profEmail').innerText = currentUser.email;
     document.getElementById('profileModal').style.display = 'flex';
   } else {
@@ -784,45 +757,20 @@ function openProfileModal(){
   }
 }
 
-function switchToRegister(){
-  closeModal('loginModal');
-  document.getElementById('registerModal').style.display = 'flex';
-}
-
-function switchToLogin(){
-  closeModal('registerModal');
-  document.getElementById('loginModal').style.display = 'flex';
-}
-
-function handleRegister(){
-  const name = document.getElementById('regName').value;
-  const email = document.getElementById('regEmail').value;
-  const pass = document.getElementById('regPass').value;
-
-  if(!name || !email || !pass){
-    alert("Please fill all fields!");
-    return;
-  }
-
-  registeredUsers.push({name, email, pass});
-  alert("Account created successfully! Please login.");
-  switchToLogin();
-}
-
-function handleLogin(){
+function handleDirectLogin(){
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
 
-  const found = registeredUsers.find(u => u.email === email && u.pass === pass);
-  if(found){
-    currentUser = found;
-    document.getElementById('profileLabel').innerText = currentUser.name.split(' ')[0];
-    document.getElementById('catBar').style.display = 'flex'; // Show navigation after login
-    closeModal('loginModal');
-    alert("Welcome back, " + currentUser.name + "!");
-  } else {
-    alert("Invalid Email or Password! Or please create an account first.");
+  if(!email || !pass){
+    alert("Please enter both Email and Password!");
+    return;
   }
+
+  currentUser = { email: email };
+  document.getElementById('profileLabel').innerText = email.split('@')[0];
+  document.getElementById('catBar').style.display = 'flex'; // Show navigation after login
+  closeModal('loginModal');
+  alert("Login Successful! Welcome, " + email);
 }
 
 function handleLogout(){
