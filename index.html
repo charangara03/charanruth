@@ -28,14 +28,14 @@ body{background:#f0f2f5}
 .show{display:block !important}
 
 /* Home Interface */
-.home-container{padding:20px;max-width:1200px;margin:auto}
-.hero-banner{background:linear-gradient(135deg, #2874f0, #1652b1);color:white;padding:50px 30px;border-radius:15px;text-align:center;margin-bottom:30px;box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+.home-container{padding:20px;max-width:1200px;margin:auto;text-align:center}
+.hero-banner{background:linear-gradient(135deg, #2874f0, #1652b1);color:white;padding:60px 30px;border-radius:15px;margin-bottom:30px;box-shadow:0 6px 20px rgba(0,0,0,0.15)}
 .hero-banner h1{font-size:36px;margin-bottom:12px}
 .hero-banner p{font-size:17px;margin-bottom:25px;opacity:0.95}
 .shop-now-btn{background:#ff9f00;color:white;border:none;padding:12px 35px;font-size:16px;font-weight:bold;border-radius:30px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.2);transition:0.3s}
 .shop-now-btn:hover{background:#f39600;transform:scale(1.05)}
 
-.section-title{font-size:22px;margin:20px 0 15px 0;color:#222;font-weight:bold}
+.section-title{font-size:22px;margin:20px 0 15px 0;color:#222;font-weight:bold;text-align:left}
 .banner-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:20px;margin-bottom:40px}
 .banner-card{background:white;padding:25px;border-radius:12px;text-align:center;box-shadow:0 3px 10px #0001;cursor:pointer;transition:all 0.3s ease;border-top:4px solid #2874f0}
 .banner-card:hover{transform:translateY(-6px);box-shadow:0 6px 18px rgba(0,0,0,0.1)}
@@ -74,7 +74,8 @@ body{background:#f0f2f5}
   </div>
 </div>
 
-<div class="cats">
+<!-- Categories Bar (Hidden until login) -->
+<div class="cats" id="catBar" style="display:none;">
   <button id="homeBtn" class="active" onclick="goHome()">🏠 Home</button>
   <button onclick="filterProd('all',this)">All Products</button>
   
@@ -145,25 +146,25 @@ body{background:#f0f2f5}
 <div class="home-container" id="homeView">
   <div class="hero-banner">
     <h1>Welcome to CharanRuth Mega Store 🚀</h1>
-    <p>Explore Top Branded Mobiles, Stylish Sneakers, Luxury Watches, Fashion & Groceries at Best Prices!</p>
-    <button class="shop-now-btn" onclick="filterProd('all', document.querySelector('.cats button:nth-child(2)'))">Shop All Products</button>
+    <p>Please Login or Create an Account to Explore Products, Add to Cart & Shop!</p>
+    <button class="shop-now-btn" onclick="checkLoginAndShop()">Login to Start Shopping</button>
   </div>
 
-  <div class="section-title">🔥 Explore Popular Categories</div>
+  <div class="section-title">🔥 Featured Categories</div>
   <div class="banner-grid">
-    <div class="banner-card" onclick="filterSub('oppo', 'mobileBtn', 'mobileMenu')">
+    <div class="banner-card" onclick="checkLoginAndAction(() => filterSub('oppo', 'mobileBtn', 'mobileMenu'))">
       <h3>📱 Latest Mobiles</h3>
       <p>Oppo, Vivo, iPhone, Samsung & more</p>
     </div>
-    <div class="banner-card" onclick="filterSub('sneakers', 'shoeBtn', 'shoeMenu')">
+    <div class="banner-card" onclick="checkLoginAndAction(() => filterSub('sneakers', 'shoeBtn', 'shoeMenu'))">
       <h3>👟 Branded Sneakers</h3>
       <p>Nike, Puma, Adidas & stylish kicks</p>
     </div>
-    <div class="banner-card" onclick="filterSub('watches', 'watchBtn', 'watchMenu')">
+    <div class="banner-card" onclick="checkLoginAndAction(() => filterSub('watches', 'watchBtn', 'watchMenu'))">
       <h3>⌚ Watches & Smartwatches</h3>
       <p>Fastrack, Titan, Fossil, Apple Watch</p>
     </div>
-    <div class="banner-card" onclick="filterProd('sarees', document.querySelector('.cats button:nth-last-child(3)'))">
+    <div class="banner-card" onclick="checkLoginAndAction(() => filterProd('sarees', document.querySelector('.cats button:nth-last-child(3)')))">
       <h3>🥻 Traditional Sarees</h3>
       <p>Gadwal Pattu & ethnic collections</p>
     </div>
@@ -590,16 +591,43 @@ let cartItems = [];
 let currentUser = null;
 let registeredUsers = [];
 
+function checkLoginAndShop(){
+  if(!currentUser){
+    alert("Please Login First to Access Shopping!");
+    openProfileModal();
+  } else {
+    filterProd('all', document.querySelector('.cats button:nth-child(2)'));
+  }
+}
+
+function checkLoginAndAction(actionCallback){
+  if(!currentUser){
+    alert("Please Login First to Access Categories!");
+    openProfileModal();
+  } else {
+    actionCallback();
+  }
+}
+
 function goHome(){
   closeAllMenus();
+  if(!currentUser){
+    document.getElementById('catBar').style.display = 'none';
+  }
   document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('homeBtn').classList.add('active');
+  const homeBtn = document.getElementById('homeBtn');
+  if(homeBtn) homeBtn.classList.add('active');
   
   document.getElementById('homeView').style.display = 'block';
   document.getElementById('grid').style.display = 'none';
 }
 
 function render(list){
+  if(!currentUser){
+    alert("Please Login First!");
+    openProfileModal();
+    return;
+  }
   document.getElementById('homeView').style.display = 'none';
   document.getElementById('grid').style.display = 'grid';
   document.getElementById('grid').innerHTML = list.map(p => `
@@ -623,6 +651,11 @@ function closeAllMenus(){
 }
 
 function filterProd(c,btn){
+  if(!currentUser){
+    alert("Please Login First!");
+    openProfileModal();
+    return;
+  }
   closeAllMenus();
   ['mobileBtn', 'shoeBtn', 'fashionBtn', 'electronicsBtn', 'watchBtn'].forEach(id => {
     const el = document.getElementById(id);
@@ -639,6 +672,11 @@ function filterProd(c,btn){
 }
 
 function toggleMenu(menuId, btnId, e){
+  if(!currentUser){
+    alert("Please Login First!");
+    openProfileModal();
+    return;
+  }
   e.stopPropagation();
   const menu = document.getElementById(menuId);
   const btn = document.getElementById(btnId).getBoundingClientRect();
@@ -653,6 +691,11 @@ function toggleMenu(menuId, btnId, e){
 }
 
 function filterSub(cat, btnId, menuId){
+  if(!currentUser){
+    alert("Please Login First!");
+    openProfileModal();
+    return;
+  }
   const menu = document.getElementById(menuId);
   if(menu) menu.classList.remove('show');
 
@@ -669,6 +712,11 @@ function filterSub(cat, btnId, menuId){
 }
 
 function addCart(productId){
+  if(!currentUser){
+    alert("Please Login First to Add Items to Cart!");
+    openProfileModal();
+    return;
+  }
   const product = products.find(p => p.id === productId);
   if(product){
     cartItems.push(product);
@@ -678,6 +726,11 @@ function addCart(productId){
 }
 
 function buyNow(productId){
+  if(!currentUser){
+    alert("Please Login First to Purchase!");
+    openProfileModal();
+    return;
+  }
   const product = products.find(p => p.id === productId);
   if(product){
     document.getElementById('orderSuccessText').innerHTML = 
@@ -708,6 +761,11 @@ function removeFromCart(index){
 }
 
 function openCart(){
+  if(!currentUser){
+    alert("Please Login First to View Cart!");
+    openProfileModal();
+    return;
+  }
   document.getElementById('cartModal').style.display = 'flex';
 }
 
@@ -759,6 +817,7 @@ function handleLogin(){
   if(found){
     currentUser = found;
     document.getElementById('profileLabel').innerText = currentUser.name.split(' ')[0];
+    document.getElementById('catBar').style.display = 'flex'; // Show navigation after login
     closeModal('loginModal');
     alert("Welcome back, " + currentUser.name + "!");
   } else {
@@ -769,7 +828,9 @@ function handleLogin(){
 function handleLogout(){
   currentUser = null;
   document.getElementById('profileLabel').innerText = "Login";
+  document.getElementById('catBar').style.display = 'none'; // Hide navigation on logout
   closeModal('profileModal');
+  goHome();
   alert("Logged out successfully.");
 }
 
