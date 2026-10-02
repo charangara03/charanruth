@@ -183,6 +183,16 @@ body{background:#f0f2f5}
   </div>
 </div>
 
+<!-- Buy Now Success Modal -->
+<div class="modal" id="orderSuccessModal">
+  <div class="modal-content" style="text-align:center;">
+    <button class="close-btn" onclick="closeModal('orderSuccessModal')">X</button>
+    <h2 style="color:#388e3c;">🎉 Order Placed Successfully!</h2>
+    <p id="orderSuccessText" style="margin:15px 0;font-size:15px;color:#333;line-height:1.5;"></p>
+    <button class="submit-btn" onclick="closeModal('orderSuccessModal')">Continue Shopping</button>
+  </div>
+</div>
+
 <!-- Login Modal -->
 <div class="modal" id="loginModal">
   <div class="modal-content">
@@ -670,7 +680,9 @@ function addCart(productId){
 function buyNow(productId){
   const product = products.find(p => p.id === productId);
   if(product){
-    alert("🎉 Order Placed Successfully!\n\nProduct: " + product.name + "\nPrice: ₹" + product.price + "\nStatus: Your order has been placed and shipped, out for delivery!");
+    document.getElementById('orderSuccessText').innerHTML = 
+      `<b>${product.name}</b><br>Price: ₹${product.price}<br><br>Your order has been placed successfully and shipped out for delivery! 🚚✨`;
+    document.getElementById('orderSuccessModal').style.display = 'flex';
   }
 }
 
