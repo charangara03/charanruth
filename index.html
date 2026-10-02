@@ -11,15 +11,16 @@ body{background:#f0f2f5}
 .cart-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
 .cats{background:white;padding:10px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 5px #0001;position:sticky;top:53px;z-index:99;align-items:center}
 .cats button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer}
-.cats button.active{background:#2874f0;color:white}
+.cats button.active{background:#2874f0;color:white;border-color:#2874f0}
 .dropdown{position:relative;display:inline-block}
-.dropdown-content{display:none;position:absolute;background:white;min-width:150px;box-shadow:0 8px 16px rgba(0,0,0,.2);border-radius:10px;z-index:1000;top:38px;left:0;overflow:hidden;border:1px solid #ddd}
-.dropdown-content button{display:block;width:100%;text-align:left;border:none;border-radius:0;padding:12px 15px}
+.dropbtn{background:#2874f0 !important;color:white !important;border-color:#2874f0 !important}
+.dropdown-content{display:none;position:absolute;background:white;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:1000;top:42px;left:0;overflow:hidden;border:1px solid #ddd}
+.dropdown-content button{display:block;width:100%;text-align:left;border:none;border-radius:0;padding:13px 15px;background:white;font-weight:bold}
 .dropdown-content button:hover{background:#e8f0fe}
-.dropdown:hover .dropdown-content{display:block}
+.show{display:block !important}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px}
 .card{background:white;border-radius:8px;padding:10px;box-shadow:0 1px 4px #0001;text-align:center}
-.card img{width:100%;height:130px;object-fit:contain;background:#fff}
+.card img{width:100%;height:130px;object-fit:contain}
 .card h3{font-size:13px;margin:8px 0;height:32px;overflow:hidden}
 .card .price{color:#388e3c;font-weight:bold;margin:5px 0}
 .card button{background:#ff9f00;color:white;border:none;padding:7px 0;width:100%;border-radius:4px;cursor:pointer;font-weight:bold}
@@ -27,24 +28,29 @@ body{background:#f0f2f5}
 </head>
 <body>
 <div class="header"><h1>CharanRuth 🛒</h1><button class="cart-btn">🛒 Cart (<span id="cartCount">0</span>)</button></div>
+
 <div class="cats">
-<button class="active" onclick="filterProd('all',this)">All Products</button>
+<button onclick="filterProd('all',this)">All Products</button>
 <button onclick="filterProd('fashion',this)">👕 Fashion</button>
 <button onclick="filterProd('electronics',this)">🎧 Electronics</button>
+
 <div class="dropdown">
-<button id="shoeBtn" onclick="filterProd('shoes',this)">👟 Shoes ▼</button>
-<div class="dropdown-content">
-<button onclick="filterProd('sneakers',document.getElementById('shoeBtn'))">👟 Sneakers</button>
-<button onclick="filterProd('loafers',document.getElementById('shoeBtn'))">👞 Loafers</button>
+  <button class="dropbtn active" id="shoeBtn" onclick="toggleShoes(event)">👟 Shoes ▼</button>
+  <div class="dropdown-content" id="shoeMenu">
+    <button onclick="openSub('sneakers')">👟 Sneakers</button>
+    <button onclick="openSub('loafers')">👞 Loafers</button>
+  </div>
 </div>
-</div>
+
 <button onclick="filterProd('watches',this)">⌚ Watches</button>
 <button onclick="filterProd('sarees',this)">🥻 Sarees</button>
 <button onclick="filterProd('groceries',this)">🛒 Groceries</button>
 <button onclick="filterProd('laptops',this)">💻 Laptops</button>
 <button onclick="filterProd('toys',this)">🧸 Toys</button>
 </div>
+
 <div class="grid" id="grid"></div>
+
 <script>
 const products=[
 {id:2,name:"Nike Air Max Sneakers Men",price:1999,cat:"sneakers",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},
@@ -66,13 +72,22 @@ function render(list){
 document.getElementById('grid').innerHTML=list.map(p=>`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><div class="price">₹${p.price}</div><button onclick="addCart()">Add to Cart</button></div>`).join('');
 }
 function filterProd(c,btn){
-document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));
-if(btn) btn.classList.add('active');
+if(btn){document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
 if(c==='all') render(products);
 else if(c==='shoes') render(products.filter(p=>p.cat==='sneakers' || p.cat==='loafers'));
 else render(products.filter(p=>p.cat===c));
 }
+function toggleShoes(e){
+e.stopPropagation();
+document.getElementById('shoeMenu').classList.toggle('show');
+filterProd('shoes',document.getElementById('shoeBtn'));
+}
+function openSub(cat){
+document.getElementById('shoeMenu').classList.remove('show');
+render(products.filter(p=>p.cat===cat));
+}
 function addCart(){cart++;document.getElementById('cartCount').innerText=cart;}
+document.addEventListener('click',function(e){ if(!e.target.closest('.dropdown')) document.getElementById('shoeMenu').classList.remove('show'); });
 render(products);
 </script>
 </body>
