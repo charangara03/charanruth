@@ -670,7 +670,7 @@ function addCart(productId){
 function buyNow(productId){
   const product = products.find(p => p.id === productId);
   if(product){
-    alert("Proceeding to Checkout for: " + product.name + " (Price: ₹" + product.price + ")");
+    alert("🎉 Order Placed Successfully!\n\nProduct: " + product.name + "\nPrice: ₹" + product.price + "\nStatus: Your order has been placed and shipped, out for delivery!");
   }
 }
 
