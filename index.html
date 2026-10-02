@@ -8,7 +8,8 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#f0f2f5}
 .header{background:#2874f0;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.cart-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
+.header-right{display:flex;gap:10px;align-items:center}
+.cart-btn, .profile-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
 .cats{background:white;padding:10px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 5px #0001;position:sticky;top:53px;z-index:99;align-items:center}
 .cats::-webkit-scrollbar{display:none}
 .cats > button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer;flex-shrink:0}
@@ -29,17 +30,25 @@ body{background:#f0f2f5}
 .card .price{color:#388e3c;font-weight:bold;margin:5px 0}
 .card button{background:#ff9f00;color:white;border:none;padding:7px 0;width:100%;border-radius:4px;cursor:pointer;font-weight:bold}
 
-/* Cart Modal Styles */
-.cart-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center}
-.cart-content{background:white;width:90%;max-width:400px;padding:20px;border-radius:10px;max-height:80vh;overflow-y:auto;position:relative}
+/* Modals Styles */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center}
+.modal-content{background:white;width:90%;max-width:380px;padding:25px;border-radius:10px;position:relative;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+.modal-content h2{margin-bottom:15px;color:#2874f0}
+.modal-content input{width:100%;padding:10px;margin-bottom:12px;border:1px solid #ddd;border-radius:5px}
+.modal-content button.submit-btn{width:100%;background:#2874f0;color:white;border:none;padding:10px;border-radius:5px;font-weight:bold;cursor:pointer}
+.close-btn{background:red;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:5px;position:absolute;right:15px;top:15px}
+.switch-text{margin-top:10px;font-size:13px;text-align:center}
+.switch-text span{color:#2874f0;cursor:pointer;font-weight:bold}
 .cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:5px;font-size:14px}
-.close-cart{background:red;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:5px;float:right}
 </style>
 </head>
 <body>
 <div class="header">
   <h1>CharanRuth 🛒</h1>
-  <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+  <div class="header-right">
+    <button class="profile-btn" onclick="openProfileModal()">👤 <span id="profileLabel">Login</span></button>
+    <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+  </div>
 </div>
 
 <div class="cats">
@@ -112,12 +121,48 @@ body{background:#f0f2f5}
 <div class="grid" id="grid"></div>
 
 <!-- Cart Modal Popup -->
-<div class="cart-modal" id="cartModal">
-  <div class="cart-content">
-    <button class="close-cart" onclick="closeCart()">X</button>
+<div class="modal" id="cartModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('cartModal')">X</button>
     <h2>Your Cart</h2>
     <div id="cartItemsList" style="margin-top:10px;"></div>
     <h3 style="margin-top:15px;">Total: ₹<span id="cartTotal">0</span></h3>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('loginModal')">X</button>
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Enter Email">
+    <input type="password" id="loginPass" placeholder="Enter Password">
+    <button class="submit-btn" onclick="handleLogin()">Login</button>
+    <div class="switch-text">Don't have an account? <span onclick="switchToRegister()">Create Account</span></div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('registerModal')">X</button>
+    <h2>Create Account</h2>
+    <input type="text" id="regName" placeholder="Full Name">
+    <input type="email" id="regEmail" placeholder="Email Address">
+    <input type="password" id="regPass" placeholder="Password">
+    <button class="submit-btn" onclick="handleRegister()">Sign Up</button>
+    <div class="switch-text">Already have an account? <span onclick="switchToLogin()">Login</span></div>
+  </div>
+</div>
+
+<!-- User Profile Modal -->
+<div class="modal" id="profileModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('profileModal')">X</button>
+    <h2>My Profile</h2>
+    <p><strong>Name:</strong> <span id="profName"></span></p>
+    <p style="margin-top:8px;"><strong>Email:</strong> <span id="profEmail"></span></p>
+    <button class="submit-btn" style="background:red;margin-top:20px;" onclick="handleLogout()">Logout</button>
   </div>
 </div>
 
@@ -479,6 +524,8 @@ const products=[
 ];
 
 let cartItems = [];
+let currentUser = null;
+let registeredUsers = [];
 
 function render(list){
   document.getElementById('grid').innerHTML = list.map(p => `
@@ -492,8 +539,7 @@ function render(list){
 }
 
 function closeAllMenus(){
-  const menus = ['mobileMenu', 'shoeMenu', 'fashionMenu', 'electronicsMenu', 'watchMenu'];
-  menus.forEach(id => {
+  ['mobileMenu', 'shoeMenu', 'fashionMenu', 'electronicsMenu', 'watchMenu'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('show');
   });
@@ -576,13 +622,69 @@ function removeFromCart(index){
 }
 
 function openCart(){
-  const modal = document.getElementById('cartModal');
-  if(modal) modal.style.display = 'flex';
+  document.getElementById('cartModal').style.display = 'flex';
 }
 
-function closeCart(){
-  const modal = document.getElementById('cartModal');
-  if(modal) modal.style.display = 'none';
+function closeModal(modalId){
+  document.getElementById(modalId).style.display = 'none';
+}
+
+// Profile & Auth Logic
+function openProfileModal(){
+  if(currentUser){
+    document.getElementById('profName').innerText = currentUser.name;
+    document.getElementById('profEmail').innerText = currentUser.email;
+    document.getElementById('profileModal').style.display = 'flex';
+  } else {
+    document.getElementById('loginModal').style.display = 'flex';
+  }
+}
+
+function switchToRegister(){
+  closeModal('loginModal');
+  document.getElementById('registerModal').style.display = 'flex';
+}
+
+function switchToLogin(){
+  closeModal('registerModal');
+  document.getElementById('loginModal').style.display = 'flex';
+}
+
+function handleRegister(){
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPass').value;
+
+  if(!name || !email || !pass){
+    alert("Please fill all fields!");
+    return;
+  }
+
+  registeredUsers.push({name, email, pass});
+  alert("Account created successfully! Please login.");
+  switchToLogin();
+}
+
+function handleLogin(){
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+
+  const found = registeredUsers.find(u => u.email === email && u.pass === pass);
+  if(found){
+    currentUser = found;
+    document.getElementById('profileLabel').innerText = currentUser.name.split(' ')[0];
+    closeModal('loginModal');
+    alert("Welcome back, " + currentUser.name + "!");
+  } else {
+    alert("Invalid Email or Password! Or please create an account first.");
+  }
+}
+
+function handleLogout(){
+  currentUser = null;
+  document.getElementById('profileLabel').innerText = "Login";
+  closeModal('profileModal');
+  alert("Logged out successfully.");
 }
 
 document.addEventListener('click',function(e){ 
