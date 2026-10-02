@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CharanRuth - Gadwal Shopping</title>
+<title>CharanRuth - Online Shopping Hub</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f0f2f5}
 .header{background:#2874f0;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.header-right{display:flex;gap:10px;align-items:center}
+.logo{font-size:22px;font-weight:bold;cursor:pointer}
+.header-right{display:flex;gap:12px;align-items:center}
 .cart-btn, .profile-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
+
 .cats{background:white;padding:10px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 5px #0001;position:sticky;top:53px;z-index:99;align-items:center}
 .cats::-webkit-scrollbar{display:none}
 .cats > button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer;flex-shrink:0}
 .cats > button.active{background:#2874f0;color:white;border-color:#2874f0}
+
 .dropdown{position:relative;display:inline-block;flex-shrink:0}
 .dropbtn{background:white;color:black;border:1px solid #ddd;padding:7px 14px;border-radius:20px;cursor:pointer}
 .dropbtn.active{background:#2874f0 !important;color:white !important;border-color:#2874f0 !important}
@@ -23,14 +26,29 @@ body{background:#f0f2f5}
 .dropdown-content button{display:block;width:100%;text-align:left;border:none;border-radius:0;padding:11px 15px;background:white;font-weight:bold;cursor:pointer}
 .dropdown-content button:hover{background:#e8f0fe}
 .show{display:block !important}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px}
+
+/* Home Interface Styles */
+.home-container{padding:20px;max-width:1200px;margin:auto}
+.hero-banner{background:linear-gradient(135deg, #2874f0, #1652b1);color:white;padding:40px;border-radius:12px;text-align:center;margin-bottom:30px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+.hero-banner h1{font-size:32px;margin-bottom:10px}
+.hero-banner p{font-size:16px;margin-bottom:20px;opacity:0.9}
+.shop-now-btn{background:#ff9f00;color:white;border:none;padding:12px 30px;font-size:16px;font-weight:bold;border-radius:25px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.shop-now-btn:hover{background:#f39600}
+
+.section-title{font-size:20px;margin-bottom:15px;color:#333;font-weight:bold}
+.banner-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:15px;margin-bottom:30px}
+.banner-card{background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 8px #0001;cursor:pointer;transition:transform 0.2s}
+.banner-card:hover{transform:translateY(-5px)}
+.banner-card h3{color:#2874f0;margin-bottom:8px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px;display:none}
 .card{background:white;border-radius:8px;padding:10px;box-shadow:0 1px 4px #0001;text-align:center}
 .card img{width:100%;height:130px;object-fit:contain}
 .card h3{font-size:13px;margin:8px 0;height:32px;overflow:hidden}
 .card .price{color:#388e3c;font-weight:bold;margin:5px 0}
 .card button{background:#ff9f00;color:white;border:none;padding:7px 0;width:100%;border-radius:4px;cursor:pointer;font-weight:bold}
 
-/* Modals Styles */
+/* Modals */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center}
 .modal-content{background:white;width:90%;max-width:380px;padding:25px;border-radius:10px;position:relative;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
 .modal-content h2{margin-bottom:15px;color:#2874f0}
@@ -44,7 +62,7 @@ body{background:#f0f2f5}
 </head>
 <body>
 <div class="header">
-  <h1>CharanRuth 🛒</h1>
+  <div class="logo" onclick="goHome()">CharanRuth 🛒</div>
   <div class="header-right">
     <button class="profile-btn" onclick="openProfileModal()">👤 <span id="profileLabel">Login</span></button>
     <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
@@ -52,7 +70,8 @@ body{background:#f0f2f5}
 </div>
 
 <div class="cats">
-  <button class="active" onclick="filterProd('all',this)">All Products</button>
+  <button id="homeBtn" class="active" onclick="goHome()">🏠 Home</button>
+  <button onclick="filterProd('all',this)">All Products</button>
   
   <!-- Mobiles Dropdown -->
   <div class="dropdown">
@@ -86,10 +105,10 @@ body{background:#f0f2f5}
   <div class="dropdown">
     <button class="dropbtn" id="fashionBtn" onclick="toggleMenu('fashionMenu', 'fashionBtn', event)">👕 Fashion ▼</button>
     <div class="dropdown-content" id="fashionMenu">
-      <button onclick="filterSub('mens_wardrobe', 'fashionBtn', 'fashionMenu')">👔 Men's Wardrobe (Adults)</button>
-      <button onclick="filterSub('boys_wear', 'fashionBtn', 'fashionMenu')">👦 Boys' Wear (Toddlers to Teens)</button>
-      <button onclick="filterSub('girls_wear', 'fashionBtn', 'fashionMenu')">👧 Girls' Wear (Toddlers to Teens)</button>
-      <button onclick="filterSub('womens_kids', 'fashionBtn', 'fashionMenu')">👗 Women's and Kids Wear</button>
+      <button onclick="filterSub('mens_wardrobe', 'fashionBtn', 'fashionMenu')">👔 Men's Wardrobe</button>
+      <button onclick="filterSub('boys_wear', 'fashionBtn', 'fashionMenu')">👦 Boys' Wear</button>
+      <button onclick="filterSub('girls_wear', 'fashionBtn', 'fashionMenu')">👧 Girls' Wear</button>
+      <button onclick="filterSub('womens_kids', 'fashionBtn', 'fashionMenu')">👗 Women's & Kids</button>
     </div>
   </div>
 
@@ -97,11 +116,10 @@ body{background:#f0f2f5}
   <div class="dropdown">
     <button class="dropbtn" id="electronicsBtn" onclick="toggleMenu('electronicsMenu', 'electronicsBtn', event)">🎧 Electronics ▼</button>
     <div class="dropdown-content" id="electronicsMenu">
-      <button onclick="filterSub('laptops_computers', 'electronicsBtn', 'electronicsMenu')">💻 Laptops & Computers</button>
+      <button onclick="filterSub('laptops_computers', 'electronicsBtn', 'electronicsMenu')">💻 Laptops & PCs</button>
       <button onclick="filterSub('audio_devices', 'electronicsBtn', 'electronicsMenu')">🎧 Audio Devices</button>
-      <button onclick="filterSub('home_entertainment', 'electronicsBtn', 'electronicsMenu')">📺 Home Entertainment & TVs</button>
-      <button onclick="filterSub('cameras_gadgets', 'electronicsBtn', 'electronicsMenu')">📷 Cameras & Gadgets</button>
-      <button onclick="filterSub('smart_watches', 'electronicsBtn', 'electronicsMenu')">⌚ Smart Watches</button>
+      <button onclick="filterSub('home_entertainment', 'electronicsBtn', 'electronicsMenu')">📺 TVs & Entertainment</button>
+      <button onclick="filterSub('cameras_gadgets', 'electronicsBtn', 'electronicsMenu')">📷 Cameras</button>
     </div>
   </div>
 
@@ -118,9 +136,39 @@ body{background:#f0f2f5}
   <button onclick="filterProd('toys',this)">🧸 Toys</button>
 </div>
 
+<!-- Home View Interface -->
+<div class="home-container" id="homeView">
+  <div class="hero-banner">
+    <h1>Welcome to CharanRuth Mega Store 🚀</h1>
+    <p>Discover the latest Mobiles, Trendiest Shoes, Luxury Watches, Fashion & More at Best Prices!</p>
+    <button class="shop-now-btn" onclick="filterProd('all', document.querySelector('.cats button:nth-child(2)'))">Explore All Products</button>
+  </div>
+
+  <div class="section-title">🔥 Popular Categories</div>
+  <div class="banner-grid">
+    <div class="banner-card" onclick="filterSub('oppo', 'mobileBtn', 'mobileMenu')">
+      <h3>📱 Latest Mobiles</h3>
+      <p>Oppo, Vivo, iPhone, Samsung & more</p>
+    </div>
+    <div class="banner-card" onclick="filterSub('sneakers', 'shoeBtn', 'shoeMenu')">
+      <h3>👟 Branded Sneakers</h3>
+      <p>Nike, Puma, Adidas & stylish kicks</p>
+    </div>
+    <div class="banner-card" onclick="filterSub('watches', 'watchBtn', 'watchMenu')">
+      <h3>⌚ Luxury & Smart Watches</h3>
+      <p>Fastrack, Titan, Fossil, Apple Watch</p>
+    </div>
+    <div class="banner-card" onclick="filterProd('sarees', document.querySelector('.cats button:nth-last-child(3)'))">
+      <h3>🥻 Traditional Sarees</h3>
+      <p>Gadwal Pattu & ethnic wear</p>
+    </div>
+  </div>
+</div>
+
+<!-- Product Grid View -->
 <div class="grid" id="grid"></div>
 
-<!-- Cart Modal Popup -->
+<!-- Cart Modal -->
 <div class="modal" id="cartModal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal('cartModal')">X</button>
@@ -155,7 +203,7 @@ body{background:#f0f2f5}
   </div>
 </div>
 
-<!-- User Profile Modal -->
+<!-- Profile Modal -->
 <div class="modal" id="profileModal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeModal('profileModal')">X</button>
@@ -527,7 +575,18 @@ let cartItems = [];
 let currentUser = null;
 let registeredUsers = [];
 
+function goHome(){
+  closeAllMenus();
+  document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('homeBtn').classList.add('active');
+  
+  document.getElementById('homeView').style.display = 'block';
+  document.getElementById('grid').style.display = 'none';
+}
+
 function render(list){
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('grid').style.display = 'grid';
   document.getElementById('grid').innerHTML = list.map(p => `
     <div class="card">
       <img src="${p.img}">
@@ -580,7 +639,7 @@ function filterSub(cat, btnId, menuId){
   if(menu) menu.classList.remove('show');
 
   document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
-  ['mobileBtn', 'shoeBtn', 'fashionBtn', 'electronicsBtn', 'watchBtn'].forEach(id => {
+  ['homeBtn', 'mobileBtn', 'shoeBtn', 'fashionBtn', 'electronicsBtn', 'watchBtn'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('active');
   });
@@ -692,8 +751,6 @@ document.addEventListener('click',function(e){
     closeAllMenus();
   } 
 });
-
-render(products);
 </script>
 </body>
 </html>
