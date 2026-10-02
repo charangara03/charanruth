@@ -91,11 +91,8 @@ function filterProd(c,btn){
  document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));
  if(btn) btn.classList.add('active');
  if(c==='all') render(products);
+ else if(c==='shoes') render(products.filter(p=>p.cat==='sneakers' || p.cat==='loafers'));
  else render(products.filter(p=>p.cat===c));
-}
-function addCart(){
- cart++;
- document.getElementById('cartCount').innerText=cart;
 }
 render(products);
 </script>
