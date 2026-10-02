@@ -30,16 +30,16 @@ body{background:#f0f2f5}
 .card button{background:#ff9f00;color:white;border:none;padding:7px 0;width:100%;border-radius:4px;cursor:pointer;font-weight:bold}
 
 /* Cart Modal Styles */
-.cart-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
-.cart-content{background:white;width:90%;max-width:400px;padding:20px;border-radius:10px;max-height:80vh;overflow-y:auto}
-.cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:5px}
+.cart-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center}
+.cart-content{background:white;width:90%;max-width:400px;padding:20px;border-radius:10px;max-height:80vh;overflow-y:auto;position:relative}
+.cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:5px;font-size:14px}
 .close-cart{background:red;color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:5px;float:right}
 </style>
 </head>
 <body>
 <div class="header">
   <h1>CharanRuth 🛒</h1>
-  <button class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+  <button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
 </div>
 
 <div class="cats">
@@ -114,7 +114,7 @@ body{background:#f0f2f5}
 <!-- Cart Modal Popup -->
 <div class="cart-modal" id="cartModal">
   <div class="cart-content">
-    <button class="close-cart" onclick="toggleCart()">X</button>
+    <button class="close-cart" onclick="closeCart()">X</button>
     <h2>Your Cart</h2>
     <div id="cartItemsList" style="margin-top:10px;"></div>
     <h3 style="margin-top:15px;">Total: ₹<span id="cartTotal">0</span></h3>
@@ -492,20 +492,19 @@ function render(list){
 }
 
 function closeAllMenus(){
-  document.getElementById('mobileMenu').classList.remove('show');
-  document.getElementById('shoeMenu').classList.remove('show');
-  document.getElementById('fashionMenu').classList.remove('show');
-  document.getElementById('electronicsMenu').classList.remove('show');
-  document.getElementById('watchMenu').classList.remove('show');
+  const menus = ['mobileMenu', 'shoeMenu', 'fashionMenu', 'electronicsMenu', 'watchMenu'];
+  menus.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('show');
+  });
 }
 
 function filterProd(c,btn){
   closeAllMenus();
-  document.getElementById('mobileBtn').classList.remove('active');
-  document.getElementById('shoeBtn').classList.remove('active');
-  document.getElementById('fashionBtn').classList.remove('active');
-  document.getElementById('electronicsBtn').classList.remove('active');
-  document.getElementById('watchBtn').classList.remove('active');
+  ['mobileBtn', 'shoeBtn', 'fashionBtn', 'electronicsBtn', 'watchBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('active');
+  });
 
   if(btn){
     document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
@@ -523,31 +522,36 @@ function toggleMenu(menuId, btnId, e){
 
   closeAllMenus();
 
-  menu.style.top = (btn.bottom + 5) + 'px';
-  menu.style.left = btn.left + 'px';
-  menu.classList.toggle('show');
+  if(menu){
+    menu.style.top = (btn.bottom + 5) + 'px';
+    menu.style.left = btn.left + 'px';
+    menu.classList.toggle('show');
+  }
 }
 
 function filterSub(cat, btnId, menuId){
-  document.getElementById(menuId).classList.remove('show');
+  const menu = document.getElementById(menuId);
+  if(menu) menu.classList.remove('show');
 
   document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('mobileBtn').classList.remove('active');
-  document.getElementById('shoeBtn').classList.remove('active');
-  document.getElementById('fashionBtn').classList.remove('active');
-  document.getElementById('electronicsBtn').classList.remove('active');
-  document.getElementById('watchBtn').classList.remove('active');
+  ['mobileBtn', 'shoeBtn', 'fashionBtn', 'electronicsBtn', 'watchBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('active');
+  });
 
   const activeBtn = document.getElementById(btnId);
-  activeBtn.classList.add('active');
+  if(activeBtn) activeBtn.classList.add('active');
 
   render(products.filter(p=>p.cat===cat));
 }
 
 function addCart(productId){
   const product = products.find(p => p.id === productId);
-  cartItems.push(product);
-  updateCart();
+  if(product){
+    cartItems.push(product);
+    updateCart();
+    alert(product.name + " added to cart!");
+  }
 }
 
 function updateCart(){
@@ -571,9 +575,14 @@ function removeFromCart(index){
   updateCart();
 }
 
-function toggleCart(){
+function openCart(){
   const modal = document.getElementById('cartModal');
-  modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  if(modal) modal.style.display = 'flex';
+}
+
+function closeCart(){
+  const modal = document.getElementById('cartModal');
+  if(modal) modal.style.display = 'none';
 }
 
 document.addEventListener('click',function(e){ 
