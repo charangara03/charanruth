@@ -138,7 +138,7 @@ function login(){let e=document.getElementById('lEmail').value,p=document.getEle
 function signup(){let n=document.getElementById('sName').value,e=document.getElementById('sEmail').value,p=document.getElementById('sPass').value;if(!n||!e||!p)return alert('Fill all fields');user={email:e,name:n};localStorage.setItem('user',JSON.stringify(user));document.getElementById('signupModal').classList.remove('show');afterLogin();}
 function afterLogin(){closeLogin();document.getElementById('userName').innerText='Hi, '+user.name;document.getElementById('loginBtn').style.display='none';document.getElementById('logoutBtn').style.display='inline-block';alert('Welcome '+user.name+'! 🔥');}
 function logout(){localStorage.removeItem('user');user=null;document.getElementById('userName').innerText='';document.getElementById('loginBtn').style.display='inline-block';document.getElementById('logoutBtn').style.display='none';}
-function checkout(){if(cart.length==0)return alert('Cart empty');let msg=`Hi CharanRuth! I am ${user?.name||'Customer'} - Order:%0A${cart.map(c=>`- ${c.name} ₹${c.price}`).join('%0A')}%0ATotal: ${document.getElementById('total').innerText}`;window.open(`https://wa.me/919876543210?text=${msg}`,'_blank');}
+function checkout(){if(cart.length==0)return alert('Cart empty');let msg=`Hi CharanRuth! I am ${user?.name||'Customer'} - Order:%0A${cart.map(c=>`- ${c.name} ₹${c.price}`).join('%0A')}%0ATotal: ${document.getElementById('total').innerText}`;window.open(`https://wa.me/918074598359?text=${msg}`,'_blank');}
 if(user)afterLogin();save();render(products);
 </script>
 </body>
