@@ -2,144 +2,66 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CharanRuth - India's Biggest Shopping Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<title>CharanRuth - Gadwal Shopping</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
-body{background:#f1f5f9}
-.nav{background:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px #0001}
-.logo{font-size:26px;font-weight:800;color:#0f172a} .logo span{color:#22c55e}
-.nav-links{display:flex;gap:20px;align-items:center}
-.btn{padding:10px 20px;border-radius:30px;border:none;font-weight:600;cursor:pointer}
-.btn-black{background:#0f172a;color:#fff} .btn-green{background:#22c55e;color:#000}
-.hero{background:linear-gradient(135deg,#0f172a,#1e293b 60%,#22c55e);color:#fff;padding:70px 24px;display:grid;grid-template-columns:1.2fr 0.8fr;align-items:center;gap:20px}
-.hero h1{font-size:48px;line-height:1.1} .hero h1 span{color:#22c55e}
-.hero-card{background:#fff;color:#000;border-radius:20px;padding:20px;transform:rotate(3deg)}
-.filters{display:flex;gap:10px;padding:20px 24px;overflow:auto}
-.filters button{padding:10px 18px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap;font-weight:600}
-.filters button.active{background:#0f172a;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:0 24px 40px}
-.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 15px #0001;transition:0.3s}
-.card:hover{transform:translateY(-6px)}
-.card img{width:100%;height:230px;object-fit:cover}
-.card-body{padding:16px} .price{color:#16a34a;font-weight:800;font-size:20px}
-.card-actions{display:flex;gap:8px;margin-top:10px}
-.card-actions button{flex:1;padding:10px;border-radius:12px;border:none;cursor:pointer;font-weight:600}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;place-items:center;z-index:2000;padding:20px}
-.modal.show{display:grid}
-.modal-box{background:#fff;border-radius:24px;padding:30px;width:100%;max-width:400px}
-.modal-box h2{margin-bottom:15px} .modal-box input{width:100%;padding:13px;margin:8px 0;border-radius:12px;border:1px solid #ddd;outline:none}
-#cartDrawer{position:fixed;right:-420px;top:0;width:400px;height:100%;background:#fff;z-index:3000;transition:0.4s;padding:20px;display:flex;flex-direction:column;box-shadow:-10px 0 30px #0003}
-#cartDrawer.open{right:0}
-.overlay{position:fixed;inset:0;background:#0005;display:none;z-index:2500} .overlay.show{display:block}
-@media(max-width:800px){.hero{grid-template-columns:1fr} .hero h1{font-size:32px} #cartDrawer{width:100%}}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f1f3f6}
+.head{background:#2874f0;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;position:sticky;top:0;z-index:10}
+.fil{background:#fff;padding:12px;display:flex;gap:10px;overflow:auto;position:sticky;top:58px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.fil button{padding:8px 15px;border:1px solid #ddd;border-radius:20px;background:#fff;font-weight:600;cursor:pointer;white-space:nowrap}
+.fil button.active{background:#2874f0;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:12px}
+.card{background:#fff;border-radius:8px;padding:10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.card img{width:100%;height:160px;object-fit:contain}
+.card h4{font-size:14px;margin:8px 0;height:32px;overflow:hidden}
+.pr{color:#388e3c;font-weight:700}
+.card button{width:100%;background:#ff9f00;color:#fff;border:0;padding:8px;border-radius:4px;margin-top:6px;font-weight:700;cursor:pointer}
+#cart{position:fixed;right:-380px;top:0;width:360px;height:100%;background:#fff;z-index:99;transition:0.3s;padding:20px;box-shadow:-2px 0 10px rgba(0,0,0,0.2);overflow:auto}
+#cart.open{right:0}
 </style>
 </head>
 <body>
-
-<div class="nav">
-  <div class="logo">⚡ Charan<span>Ruth</span></div>
-  <div class="nav-links">
-    <span id="userName" style="font-weight:600"></span>
-    <button class="btn btn-black" onclick="openCart()">🛒 <span id="cCount">0</span></button>
-    <button class="btn btn-green" id="loginBtn" onclick="openLogin()">Login</button>
-    <button class="btn btn-black" id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
-  </div>
+<div class="head"><h2>CharanRuth 🛍️</h2><button onclick="toggleCart()" style="background:#fff;color:#2874f0;border:0;padding:8px 15px;border-radius:20px;font-weight:700">🛒 Cart (<span id="cc">0</span>)</button></div>
+<div class="fil">
+<button class="active" onclick="filterProd('all',this)">All Products</button>
+<button onclick="filterProd('mobile',this)">📱 Mobiles</button>
+<button onclick="filterProd('fashion',this)">👕 Fashion</button>
+<button onclick="filterProd('electronics',this)">🎧 Electronics</button>
+<button onclick="filterProd('shoes',this)">👟 Shoes</button>
+<button onclick="filterProd('watches',this)">⌚ Watches</button>
+<button onclick="filterProd('sarees',this)">🥻 Gadwal Sarees</button>
+<button onclick="filterProd('groceries',this)">🛒 Groceries</button>
+<button onclick="filterProd('laptops',this)">💻 Laptops</button>
+<button onclick="filterProd('toys',this)">🧸 Toys</button>
 </div>
-
-<div class="hero">
-  <div>
-    <h1>Gadwal's <span>Biggest</span><br>Shopping Festival</h1>
-    <p style="margin-top:15px;opacity:0.9;font-size:18px">50% OFF + Free Delivery in Gadwal + COD Available</p>
-    <div style="margin-top:20px;display:flex;gap:12px">
-      <button class="btn btn-green" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now →</button>
-      <button class="btn btn-black" style="background:#fff;color:#000" onclick="openLogin()">My Account</button>
-    </div>
-  </div>
-  <div class="hero-card">
-    <h3>🔥 Today's Deal</h3>
-    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" style="width:100%;height:160px;object-fit:cover;border-radius:14px;margin:10px 0">
-    <h4>iPhone 15 Pro Max</h4><p class="price">₹1,19,900 <span style="text-decoration:line-through;color:#888;font-size:14px">₹1,39,900</span></p>
-    <button class="btn btn-black" style="width:100%;margin-top:10px" onclick="addToCart(1)">Grab Deal</button>
-  </div>
-</div>
-
-<div class="filters">
-  <button class="active" onclick="filterP('all',this)">All Products</button>
-  <button onclick="filterP('mobile',this)">📱 Mobiles</button>
-  <button onclick="filterP('fashion',this)">👕 Fashion</button>
-  <button onclick="filterP('electronics',this)">🎧 Electronics</button>
-  <button onclick="filterP('shoes',this)">👟 Shoes</button>
-</div>
-
-<div class="grid" id="products"></div>
-
-<!-- LOGIN MODAL -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <h2>Login to CharanRuth <span style="float:right;cursor:pointer" onclick="closeLogin()">✕</span></h2>
-    <input id="lEmail" placeholder="Email - demo@gmail.com">
-    <input id="lPass" type="password" placeholder="Password - 123456">
-    <button class="btn btn-black" style="width:100%;margin-top:12px;padding:13px" onclick="login()">Login</button>
-    <p style="text-align:center;margin-top:12px;font-size:14px">No account? <b style="color:#16a34a;cursor:pointer" onclick="showSignup()">Create Account</b></p>
-    <p style="text-align:center;margin-top:8px;font-size:13px;color:#888">Demo: demo@gmail.com / 123456</p>
-  </div>
-</div>
-
-<!-- SIGNUP MODAL -->
-<div class="modal" id="signupModal">
-  <div class="modal-box">
-    <h2>Create Account <span style="float:right;cursor:pointer" onclick="closeSignup()">✕</span></h2>
-    <input id="sName" placeholder="Full Name">
-    <input id="sEmail" placeholder="Email">
-    <input id="sPass" type="password" placeholder="Password">
-    <button class="btn btn-green" style="width:100%;margin-top:12px;padding:13px" onclick="signup()">Create Account</button>
-    <p style="text-align:center;margin-top:12px;font-size:14px">Already have account? <b style="cursor:pointer" onclick="showLogin()">Login</b></p>
-  </div>
-</div>
-
-<div class="overlay" id="overlay" onclick="closeCart()"></div>
-<div id="cartDrawer">
-  <h2>Your Cart <span style="float:right;cursor:pointer" onclick="closeCart()">✕</span></h2>
-  <div id="cartItems" style="flex:1;overflow:auto;margin-top:15px"></div>
-  <div style="border-top:1px solid #eee;padding-top:15px">
-    <h3>Total: <span id="total">₹0</span></h3>
-    <button onclick="checkout()" style="width:100%;margin-top:12px;padding:14px;background:#22c55e;border:none;border-radius:12px;font-weight:700;cursor:pointer">Checkout via WhatsApp</button>
-  </div>
-</div>
-
+<div class="grid" id="grid"></div>
+<div id="cart"><h3>Your Cart <span onclick="toggleCart()" style="float:right;cursor:pointer">❌</span></h3><div id="cItems" style="margin-top:15px"></div><h3 id="tot" style="margin-top:15px"></h3><button onclick="checkout()" style="width:100%;background:#25D366;color:#fff;border:0;padding:12px;border-radius:6px;margin-top:15px;font-weight:800">Checkout via WhatsApp</button></div>
 <script>
 const products=[
-{id:1,name:"iPhone 15 Pro Max 256GB",price:119900,cat:"mobile",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500"},
-{id:2,name:"Nike Air Jordan 1 Retro",price:5999,cat:"shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},
-{id:3,name:"Sony WH-1000XM5 Headphone",price:29990,cat:"electronics",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
-{id:4,name:"Men's Premium Cotton T-Shirt",price:799,cat:"fashion",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
-{id:5,name:"Apple Watch Ultra 2",price:89900,cat:"electronics",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"},
-{id:6,name:"Samsung Galaxy S24 Ultra",price:109999,cat:"mobile",img:"https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500"},
-{id:7,name:"Levi's Denim Jacket",price:3499,cat:"fashion",img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"},
-{id:8,name:"JBL Boombox 3 Speaker",price:4999,cat:"electronics",img:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e?w=500"},
+{id:1,name:"iPhone 15 128GB Black",price:70900,cat:"mobile",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500"},
+{id:2,name:"Nike Air Max Shoes For Men",price:5999,cat:"shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},
+{id:3,name:"Sony Headphones Bluetooth",price:2990,cat:"electronics",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
+{id:4,name:"Levis T-Shirt Cotton",price:1299,cat:"fashion",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
+{id:5,name:"Samsung S24 Ultra 5G",price:129999,cat:"mobile",img:"https://images.unsplash.com/photo-1610945265064-0e34e032f79f?w=500"},
+{id:6,name:"Puma Sneakers White",price:4499,cat:"shoes",img:"https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500"},
+{id:7,name:"Fastrack Watch Smart",price:3999,cat:"watches",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"},
+{id:8,name:"Gadwal Pattu Saree Silk",price:12500,cat:"sarees",img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500"},
+{id:9,name:"HP Laptop i7 16GB",price:65999,cat:"laptops",img:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"},
+{id:10,name:"Teddy Bear 3ft Big",price:1499,cat:"toys",img:"https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500"},
+{id:11,name:"Fortune Oil 5L Pack",price:750,cat:"groceries",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500"},
+{id:12,name:"India Gate Rice 10kg Bag",price:1250,cat:"groceries",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},
+{id:13,name:"Toor Dal 2kg Premium",price:320,cat:"groceries",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},
+{id:14,name:"Aashirvaad Atta 10kg",price:499,cat:"groceries",img:"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500"},
+{id:15,name:"Surf Excel 4kg Detergent",price:899,cat:"groceries",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},
+{id:16,name:"Gadwal Cotton Saree",price:3500,cat:"sarees",img:"https://images.unsplash.com/photo-1609356503793-b3907d24a40e?w=500"}
 ];
-let cart=JSON.parse(localStorage.getItem('cart')||'[]');
-let user=JSON.parse(localStorage.getItem('user')||'null');
-function render(list){let g=document.getElementById('products');g.innerHTML='';list.forEach(p=>{g.innerHTML+=`<div class="card"><img src="${p.img}"><div class="card-body"><h3>${p.name}</h3><p class="price">₹${p.price.toLocaleString('en-IN')}</p><div class="card-actions"><button style="background:#f1f5f9" onclick="addToCart(${p.id})">❤️ Wishlist</button><button class="btn-black" style="color:#fff" onclick="addToCart(${p.id})">Add to Cart</button></div></div></div>`})}
-function addToCart(id){if(!user){openLogin();return alert('Please login first!');}let p=products.find(x=>x.id==id);cart.push(p);save();openCart();}
-function save(){localStorage.setItem('cart',JSON.stringify(cart));document.getElementById('cCount').innerText=cart.length;updateCart();}
-function updateCart(){let div=document.getElementById('cartItems'),total=0;div.innerHTML='';cart.forEach((c,i)=>{total+=c.price;div.innerHTML+=`<div style="display:flex;gap:10px;margin-bottom:12px;align-items:center"><img src="${c.img}" style="width:60px;height:60px;border-radius:10px;object-fit:cover"><div style="flex:1"><b style="font-size:14px">${c.name}</b><br>₹${c.price.toLocaleString()}</div><span style="cursor:pointer" onclick="removeCart(${i})">🗑️</span></div>`});document.getElementById('total').innerText='₹'+total.toLocaleString('en-IN');}
-function removeCart(i){cart.splice(i,1);save();}
-function openCart(){document.getElementById('cartDrawer').classList.add('open');document.getElementById('overlay').classList.add('show');}
-function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-function filterP(cat,btn){document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');let f=cat=='all'?products:products.filter(p=>p.cat==cat);render(f);}
-function openLogin(){document.getElementById('loginModal').classList.add('show')}
-function closeLogin(){document.getElementById('loginModal').classList.remove('show')}
-function showSignup(){closeLogin();document.getElementById('signupModal').classList.add('show')}
-function showLogin(){document.getElementById('signupModal').classList.remove('show');openLogin()}
-function closeSignup(){document.getElementById('signupModal').classList.remove('show')}
-function login(){let e=document.getElementById('lEmail').value,p=document.getElementById('lPass').value;if(!e||!p)return alert('Enter email & password');user={email:e,name:e.split('@')[0]};localStorage.setItem('user',JSON.stringify(user));afterLogin();}
-function signup(){let n=document.getElementById('sName').value,e=document.getElementById('sEmail').value,p=document.getElementById('sPass').value;if(!n||!e||!p)return alert('Fill all fields');user={email:e,name:n};localStorage.setItem('user',JSON.stringify(user));document.getElementById('signupModal').classList.remove('show');afterLogin();}
-function afterLogin(){closeLogin();document.getElementById('userName').innerText='Hi, '+user.name;document.getElementById('loginBtn').style.display='none';document.getElementById('logoutBtn').style.display='inline-block';alert('Welcome '+user.name+'! 🔥');}
-function logout(){localStorage.removeItem('user');user=null;document.getElementById('userName').innerText='';document.getElementById('loginBtn').style.display='inline-block';document.getElementById('logoutBtn').style.display='none';}
-function checkout(){if(cart.length==0)return alert('Cart empty');let msg=`Hi CharanRuth! I am ${user?.name||'Customer'} - Order:%0A${cart.map(c=>`- ${c.name} ₹${c.price}`).join('%0A')}%0ATotal: ${document.getElementById('total').innerText}`;window.open(`https://wa.me/918074598359?text=${msg}`,'_blank');}
-if(user)afterLogin();save();render(products);
+let cart=[];
+function show(list){document.getElementById('grid').innerHTML=list.map(p=>`<div class="card"><img src="${p.img}"><h4>${p.name}</h4><div class="pr">₹${p.price}</div><button onclick="addCart(${p.id})">Add to Cart</button></div>`).join('')}
+function filterProd(c,b){document.querySelectorAll('.fil button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(c=='all')show(products);else show(products.filter(p=>p.cat==c))}
+function addCart(id){let ex=cart.find(x=>x.id==id);if(ex)ex.qty++;else{let p=products.find(x=>x.id==id);cart.push({...p,qty:1})}document.getElementById('cc').innerText=cart.reduce((a,b)=>a+b.qty,0);alert('Added!')}
+function toggleCart(){document.getElementById('cart').classList.toggle('open');let h="";let t=0;cart.forEach(i=>{t+=i.price*i.qty;h+=`<div style="display:flex;justify-content:space-between;margin:8px 0;border-bottom:1px solid #eee;padding-bottom:8px"><span>${i.name} x${i.qty}</span><span>₹${i.price*i.qty}</span></div>`});document.getElementById('cItems').innerHTML=h||"Empty";document.getElementById('tot').innerText="Total: ₹"+t}
+function checkout(){if(!cart.length)return alert('Cart Empty');let m=encodeURIComponent("New Order CharanRuth%0A"+cart.map(i=>`${i.name} x${i.qty}`).join('%0A')+"%0ATotal ₹"+cart.reduce((a,b)=>a+b.price*b.qty,0));window.open(`https://wa.me/918074598359?text=${m}`,'_blank')}
+show(products);
 </script>
 </body>
 </html>
