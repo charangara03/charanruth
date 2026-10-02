@@ -10,12 +10,13 @@ body{background:#f0f2f5}
 .header{background:#2874f0;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
 .cart-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
 .cats{background:white;padding:10px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 5px #0001;position:sticky;top:53px;z-index:99;align-items:center}
-.cats button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer}
+.cats::-webkit-scrollbar{display:none} /* Hide scrollbar for clean look */
+.cats button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer;flex-shrink:0}
 .cats button.active{background:#2874f0;color:white;border-color:#2874f0}
-.dropdown{position:relative;display:inline-block}
+.dropdown{position:relative;display:inline-block;flex-shrink:0}
 .dropbtn{background:white;color:black;border:1px solid #ddd}
 .dropbtn.active{background:#2874f0 !important;color:white !important;border-color:#2874f0 !important}
-.dropdown-content{display:none;position:absolute;background:white;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:1000;top:42px;left:0;overflow:hidden;border:1px solid #ddd}
+.dropdown-content{display:none;position:fixed;background:white;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:9999;overflow:hidden;border:1px solid #ddd}
 .dropdown-content button{display:block;width:100%;text-align:left;border:none;border-radius:0;padding:13px 15px;background:white;font-weight:bold;cursor:pointer}
 .dropdown-content button:hover{background:#e8f0fe}
 .show{display:block !important}
@@ -47,7 +48,7 @@ body{background:#f0f2f5}
 <button onclick="filterProd('sarees',this)">🥻 Sarees</button>
 <button onclick="filterProd('groceries',this)">🛒 Groceries</button>
 <button onclick="filterProd('laptops',this)">💻 Laptops</button>
-<button onclick="filterProd('toys',this)">🧸 Toys</button>
+<button onclick="filterpack('toys',this)">🧸 Toys</button>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -62,7 +63,7 @@ const products=[
 {id:102,name:"Woodland Brown Loafer",price:3999,cat:"loafers",img:"https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=500"},
 {id:103,name:"Red Chief Leather Loafer",price:2999,cat:"loafers",img:"https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500"},
 {id:3,name:"Sony Bluetooth Headset",price:2990,cat:"electronics",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
-{id:4,name:"Levis T-Shirt Cotton",price:299,cat:"fashion",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
+{id:4,name:"Levis T-Shirt Cotton",price:1299,cat:"fashion",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"},
 {id:7,name:"Fastrack Watch",price:3999,cat:"watches",img:"https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500"},
 {id:8,name:"Gadwal Pattu Saree",price:12500,cat:"sarees",img:"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500"},
 {id:9,name:"HP Laptop i7",price:65999,cat:"laptops",img:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"},
@@ -88,20 +89,30 @@ if(c==='all') render(products);
 else render(products.filter(p=>p.cat===c));
 }
 
+// Fixed filterpack name typo for toys
+function filterpack(c,btn){
+filterProd(c,btn);
+}
+
 function toggleShoes(e){
 e.stopPropagation();
-document.getElementById('shoeMenu').classList.toggle('show');
+const menu = document.getElementById('shoeMenu');
+const btn = document.getElementById('shoeBtn').getBoundingClientRect();
+
+// Position dropdown correctly using fixed positioning
+menu.style.top = (btn.bottom + 5) + 'px';
+menu.style.left = btn.left + 'px';
+
+menu.classList.toggle('show');
 }
 
 function filterSub(cat){
 document.getElementById('shoeMenu').classList.remove('show');
 
-// Remove active class from other top category buttons and highlight Shoes button
 document.querySelectorAll('.cats > button').forEach(b=>b.classList.remove('active'));
 const shoeBtn = document.getElementById('shoeBtn');
 shoeBtn.classList.add('active');
 
-// Filter products based on sub-category (sneakers or loafers)
 render(products.filter(p=>p.cat===cat));
 }
 
@@ -110,7 +121,6 @@ cart++;
 document.getElementById('cartCount').innerText=cart;
 }
 
-// Close dropdown when clicking outside
 document.addEventListener('click',function(e){ 
 if(!e.target.closest('.dropdown')) {
   document.getElementById('shoeMenu').classList.remove('show');
