@@ -11,10 +11,10 @@ body{background:#f0f2f5}
 .cart-btn{background:white;color:#2874f0;border:none;padding:8px 15px;border-radius:20px;font-weight:bold;cursor:pointer}
 .cats{background:white;padding:10px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 5px #0001;position:sticky;top:53px;z-index:99;align-items:center}
 .cats::-webkit-scrollbar{display:none}
-.cats button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer;flex-shrink:0}
-.cats button.active{background:#2874f0;color:white;border-color:#2874f0}
+.cats > button{border:1px solid #ddd;background:white;padding:7px 14px;border-radius:20px;cursor:pointer;flex-shrink:0}
+.cats > button.active{background:#2874f0;color:white;border-color:#2874f0}
 .dropdown{position:relative;display:inline-block;flex-shrink:0}
-.dropbtn{background:white;color:black;border:1px solid #ddd}
+.dropbtn{background:white;color:black;border:1px solid #ddd;padding:7px 14px;border-radius:20px;cursor:pointer}
 .dropbtn.active{background:#2874f0 !important;color:white !important;border-color:#2874f0 !important}
 .dropdown-content{display:none;position:fixed;background:white;min-width:160px;max-height:250px;overflow-y:auto;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:10px;z-index:9999;border:1px solid #ddd}
 .dropdown-content::-webkit-scrollbar{width:6px}
@@ -39,7 +39,7 @@ body{background:#f0f2f5}
 <div class="cats">
   <button class="active" onclick="filterProd('all',this)">All Products</button>
   
-  <!-- Mobiles Dropdown Menu -->
+  <!-- Mobiles Dropdown -->
   <div class="dropdown">
     <button class="dropbtn" id="mobileBtn" onclick="toggleMenu('mobileMenu', 'mobileBtn', event)">📱 Mobiles ▼</button>
     <div class="dropdown-content" id="mobileMenu">
@@ -58,7 +58,7 @@ body{background:#f0f2f5}
     </div>
   </div>
 
-  <!-- Shoes Dropdown Menu -->
+  <!-- Shoes Dropdown -->
   <div class="dropdown">
     <button class="dropbtn" id="shoeBtn" onclick="toggleMenu('shoeMenu', 'shoeBtn', event)">👟 Shoes ▼</button>
     <div class="dropdown-content" id="shoeMenu">
