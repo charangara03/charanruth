@@ -41,10 +41,10 @@ body{background:#f0f2f5}
 
 <!-- SHOES DROPDOWN START -->
 <div class="dropdown">
-  <button class="dropbtn">👟 Shoes ▼</button>
+  <button class="dropbtn" onclick="filterProd('shoes',this)">👟 Shoes ▼</button>
   <div class="dropdown-content">
-    <button onclick="filterProd('sneakers',this)">👟 Sneakers</button>
-    <button onclick="filterProd('loafers',this)">👞 Loafers</button>
+    <button onclick="event.stopPropagation(); filterProd('sneakers',this)">👟 Sneakers</button>
+    <button onclick="event.stopPropagation(); filterProd('loafers',this)">👞 Loafers</button>
   </div>
 </div>
 <!-- SHOES DROPDOWN END -->
